@@ -11,6 +11,9 @@ export default new Vuex.Store({
   mutations: {
     SET_PATIENTS(state, nuevosPacientes) {
       state.pacientes = nuevosPacientes
+    },
+    DELETE_PATIENT(state, patientId) {
+      state.pacientes.splice(patientId, 1)
     }
   },
   actions: {
@@ -28,6 +31,19 @@ export default new Vuex.Store({
           // guardar en state
           context.commit('SET_PATIENTS', pacientes)
         })
+    },
+    deletePatient(context, patientId) {
+      Firebase.firestore()
+        .collection('pacientes')
+        .doc(patientId)
+        .delete()
+        .then(() => {
+          console.log('Document successfully deleted!')
+        })
+        .catch((error) => {
+          console.error('Error removing document: ', error)
+        })
+      context.commit('DELETE_PATIENT', patientId)
     }
   },
   modules: {}
