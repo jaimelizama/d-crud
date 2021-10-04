@@ -14,7 +14,14 @@ export default new Vuex.Store({
     },
     DELETE_PATIENT(state, patientId) {
       state.pacientes.splice(patientId, 1)
+    },
+
+    ADD_PATIENT_TO_PATIENTS(state, newPatient) {
+      state.pacientes.push(newPatient)
     }
+    // ADD_PATIENT_TO_PATIENTS(state, newPatient) {
+    //   state.pacientes.push(newPatient)
+    // }
   },
   actions: {
     bringAllPatients(context) {
@@ -44,6 +51,21 @@ export default new Vuex.Store({
           console.error('Error removing document: ', error)
         })
       context.commit('DELETE_PATIENT', patientId)
+    },
+
+    addPatient(context, newPatient) {
+      Firebase.firestore()
+        .collection('pacientes')
+        .add({
+          ...newPatient
+        })
+        .then(() => {
+          console.log('Document successfully written!')
+        })
+        .catch((error) => {
+          console.error('Error writing document: ', error)
+        })
+      context.commit('ADD_PATIENT_TO_PATIENTS', newPatient)
     }
   },
   modules: {}

@@ -22,12 +22,7 @@
           <td>{{ paciente.edad }}</td>
           <td>{{ paciente.prevision }}</td>
           <td>
-            <button
-              class="mr-2 btn btn-outline-primary"
-              @click="showModal = true"
-            >
-              Editar
-            </button>
+            <button class="mr-2 btn btn-outline-primary">Editar</button>
             <button
               class="ml-2 btn btn-outline-primary"
               @click="deletePatient(paciente.id)"
@@ -44,58 +39,79 @@
         Agregar Paciente
       </button>
     </div>
-
-    <div v-if="showModal">
-      <transition name="modal">
-        <div class="modal-mask">
-          <div class="modal-wrapper">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title">Agregar Paciente</h5>
-                  <button
-                    type="button"
-                    class="close"
-                    data-dismiss="modal"
-                    aria-label="Close"
-                  >
-                    <span aria-hidden="true" @click="showModal = false"
-                      >&times;</span
+    <form @submit.prevent="addPatient">
+      <div v-if="showModal">
+        <transition name="modal">
+          <div class="modal-mask">
+            <div class="modal-wrapper">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Agregar Paciente</h5>
+                    <button
+                      type="button"
+                      class="close"
+                      data-dismiss="modal"
+                      aria-label="Close"
                     >
-                  </button>
-                </div>
-                <div class="modal-body">
-                  <div>
-                    <input placeholder="Nombre" />
+                      <span aria-hidden="true" @click="showModal = false"
+                        >&times;</span
+                      >
+                    </button>
                   </div>
-                  <div>
-                    <input placeholder="Apellido" />
+                  <div class="modal-body">
+                    <div>
+                      <input
+                        v-model="form.nombre"
+                        placeholder="Nombre"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <input
+                        v-model="form.apellido"
+                        placeholder="Apellido"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <input
+                        v-model="form.edad"
+                        type="number"
+                        placeholder="Edad"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <select v-model="form.prevision" required>
+                        <option disabled selected value="">Previsión</option>
+                        <option value="true">Isapre</option>
+                        <option value="false">Fonasa</option>
+                      </select>
+                    </div>
+                    Revisar si está leyendo los datos ingresados
+                    {{ form.nombre }} {{ form.apellido }} {{ form.edad }}
+                    {{ form.prevision }}
                   </div>
-                  <div>
-                    <input placeholder="Edad" />
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-warning"
+                      @click="showModal = false"
+                    >
+                      Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                      Agregar Paciente
+                    </button>
                   </div>
-                  <div>
-                    <input placeholder="Previsión" />
-                  </div>
-                </div>
-                <div class="modal-footer">
-                  <button
-                    type="button"
-                    class="btn btn-secondary"
-                    @click="showModal = false"
-                  >
-                    Close
-                  </button>
-                  <button type="button" class="btn btn-primary">
-                    Save changes
-                  </button>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </transition>
-    </div>
+        </transition>
+      </div>
+    </form>
   </div>
 </template>
 
@@ -103,8 +119,26 @@
 export default {
   name: 'PatientsList',
   data: () => ({
-    showModal: false
+    showModal: false,
+    form: {
+      nombre: '',
+      apellido: '',
+      edad: null,
+      prevision: ''
+    }
   }),
+  methods: {
+    deletePatient(patientId) {
+      this.$store.dispatch('deletePatient', patientId)
+    },
+    addPatient() {
+      console.log('click on submit')
+      console.log(this.form)
+      this.$store.dispatch('addPatient', this.form)
+      this.form = ''
+      this.showModal = false
+    }
+  },
   mounted() {
     this.$store.dispatch('bringAllPatients')
     // Llamar a las colecciones
@@ -125,11 +159,6 @@ export default {
     //       this.pacientes.push({ id: document.id, ...document.data() })
     //     })
     //   })
-  },
-  methods: {
-    deletePatient(patientId) {
-      this.$store.dispatch('deletePatient', patientId)
-    }
   }
 }
 </script>
@@ -159,5 +188,11 @@ tbody tr:hover {
 
 input {
   margin: 10px;
+}
+
+select {
+  margin: 10px;
+  width: 45%;
+  height: 30px;
 }
 </style>
