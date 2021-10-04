@@ -9,6 +9,10 @@ import { firebaseConfig } from '../firebase-config'
 
 firebase.initializeApp(firebaseConfig)
 
+import VModal from 'vue-js-modal'
+
+Vue.use(VModal)
+
 Vue.config.productionTip = false
 
 new Vue({

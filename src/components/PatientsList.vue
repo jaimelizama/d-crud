@@ -22,7 +22,12 @@
           <td>{{ paciente.edad }}</td>
           <td>{{ paciente.prevision }}</td>
           <td>
-            <button class="mr-2 btn btn-outline-primary">Editar</button>
+            <button
+              class="mr-2 btn btn-outline-primary"
+              @click="showModal = true"
+            >
+              Editar
+            </button>
             <button
               class="ml-2 btn btn-outline-primary"
               @click="deletePatient(paciente.id)"
@@ -33,62 +38,63 @@
         </tr>
         <tbody></tbody>
       </table>
+    </div>
+    <div class="container add-patient mt-5 text-right">
+      <button class="btn btn-primary" @click="showModal = true">
+        Agregar Paciente
+      </button>
+    </div>
 
-      <!-- Modal -->
-      <div class="modal fade" id="myModal" role="dialog">
-        <div class="modal-dialog">
-          <!-- Modal content-->
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal">
-                &times;
-              </button>
-              <h4 class="modal-title">Modal Header</h4>
-            </div>
-            <div class="modal-body">
-              <form action="#">
-                <div class="form-group">
-                  <label for="name">Name:</label>
-                  <input
-                    type="name"
-                    class="form-control"
-                    id="name"
-                    placeholder="Enter name"
-                  />
+    <div v-if="showModal">
+      <transition name="modal">
+        <div class="modal-mask">
+          <div class="modal-wrapper">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Agregar Paciente</h5>
+                  <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                  >
+                    <span aria-hidden="true" @click="showModal = false"
+                      >&times;</span
+                    >
+                  </button>
                 </div>
-                <div class="form-group">
-                  <label for="phone">Phone:</label>
-                  <input
-                    type="phone"
-                    class="form-control"
-                    id="phone"
-                    placeholder="Enter phone"
-                  />
+                <div class="modal-body">
+                  <div>
+                    <input placeholder="Nombre" />
+                  </div>
+                  <div>
+                    <input placeholder="Apellido" />
+                  </div>
+                  <div>
+                    <input placeholder="Edad" />
+                  </div>
+                  <div>
+                    <input placeholder="Previsión" />
+                  </div>
                 </div>
-                <div class="form-group">
-                  <label for="dtmf">DTMF:</label>
-                  <input
-                    type="dtmf"
-                    class="form-control"
-                    id="dtmf"
-                    placeholder="Enter dtmf"
-                  />
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    @click="showModal = false"
+                  >
+                    Close
+                  </button>
+                  <button type="button" class="btn btn-primary">
+                    Save changes
+                  </button>
                 </div>
-                <button type="submit" class="btn btn-success">Save</button>
-              </form>
-            </div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-default"
-                data-dismiss="modal"
-              >
-                Close
-              </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </transition>
     </div>
   </div>
 </template>
@@ -96,7 +102,9 @@
 <script>
 export default {
   name: 'PatientsList',
-  data: () => ({}),
+  data: () => ({
+    showModal: false
+  }),
   mounted() {
     this.$store.dispatch('bringAllPatients')
     // Llamar a las colecciones
@@ -130,5 +138,26 @@ export default {
 <style scoped>
 tbody tr:hover {
   background: rgba(217, 217, 217, 0.4);
+}
+
+.modal-mask {
+  position: fixed;
+  z-index: 9998;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: table;
+  transition: opacity 0.3s ease;
+}
+
+.modal-wrapper {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+input {
+  margin: 10px;
 }
 </style>
